@@ -1,0 +1,687 @@
+import React, { useState } from 'react';
+import { ChevronRight, ChevronLeft, Target, BarChart3, Palette, Users, MousePointer, Sparkles, CheckCircle2, Sliders, Gauge, TrendingUp } from 'lucide-react';
+
+const CertatudeHowardDeck = () => {
+  const [currentPage, setCurrentPage] = useState(0);
+  
+  // Define pages array
+  const pages = [
+    { id: '1A', title: 'Project Goals', progress: 15 },
+    { id: '1B', title: 'Brand & Audience', progress: 30 },
+    { id: '1C', title: 'Deliverables & Channels', progress: 45 },
+    { id: '1D', title: 'CTAs', progress: 60 },
+    { id: '1E', title: 'Summary & Data Checklist', progress: 75 },
+    { id: '2A', title: 'Simulation Levers', progress: 85 },
+    { id: '2B', title: 'Simulation Outputs', progress: 100 }
+  ];
+
+  const [formData, setFormData] = useState({
+    objective: 'Drive 500 new mobile app downloads and 200 loyalty program sign-ups in 30 days for our new seasonal pumpkin spice menu launch. Target 8-12% conversion rate from social ads to app download.',
+    primaryKPI: 'Mobile App Downloads (500 target)',
+    secondaryKPI: 'Loyalty Sign-ups (200 target)',
+    brandElements: 'Warm Orange (#F97316) & Cream (#FEF3C7) with deep Brown accents (#92400E). Tone: Cozy, seasonal, community-focused. Autumn-inspired with coffee shop warmth.',
+    idealCustomer: 'Coffee lovers aged 25-45, household income $50K+, suburban families and young professionals. Values convenience, quality, and seasonal experiences.',
+    deliverables: ['Landing Page', 'Social Assets'],
+    channels: ['Paid Social', 'Email Marketing'],
+    primaryCTA: '',
+    secondaryCTAs: [],
+    dataChecklist: [],
+    // Simulation levers
+    budgetDesign: 65,
+    budgetMedia: 35,
+    audienceSize: 25000,
+    responseRate: 3.5,
+    conversionRate: 10,
+    ctaPlacement: 'Above Fold',
+    ctaMix: 'App + Loyalty',
+    roiTarget: 3.5
+  });
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCheckboxChange = (field, option, checked) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: checked 
+        ? [...prev[field], option]
+        : prev[field].filter(item => item !== option)
+    }));
+  };
+
+  const handleAddSecondary = () => {
+    setFormData(prev => ({
+      ...prev,
+      secondaryCTAs: [...prev.secondaryCTAs, '']
+    }));
+  };
+
+  const handleSecondaryChange = (index, value) => {
+    setFormData(prev => ({
+      ...prev,
+      secondaryCTAs: prev.secondaryCTAs.map((cta, i) => i === index ? value : cta)
+    }));
+  };
+
+  const handleDataChecklistChange = (item, checked) => {
+    setFormData(prev => ({
+      ...prev,
+      dataChecklist: checked 
+        ? [...prev.dataChecklist, item]
+        : prev.dataChecklist.filter(i => i !== item)
+    }));
+  };
+
+  const handleSliderChange = (field, value) => {
+    if (field === 'budgetDesign') {
+      setFormData(prev => ({
+        ...prev,
+        budgetDesign: value,
+        budgetMedia: 100 - value
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
+  };
+
+  const handleToggleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Calculate simulation outputs based on current settings
+  const calculateOutputs = () => {
+    const engagementRate = Math.max(8, Math.min(25, 
+      (formData.responseRate * 1.5) + 
+      (formData.ctaPlacement === 'Above Fold' ? 3 : formData.ctaPlacement === 'Mid-Page' ? 1 : -1) +
+      (formData.budgetDesign / 100 * 5)
+    ));
+
+    const conversionPotential = formData.conversionRate > 12 ? 'High' : 
+                               formData.conversionRate > 8 ? 'Moderate' : 'Low';
+
+    const roiLow = Math.max(2.0, formData.roiTarget - 0.8 + (formData.budgetMedia / 100));
+    const roiHigh = Math.min(5.0, formData.roiTarget + 0.7 + (formData.budgetMedia / 100));
+
+    return {
+      engagementRate: engagementRate.toFixed(1),
+      conversionPotential,
+      roiLow: roiLow.toFixed(1),
+      roiHigh: roiHigh.toFixed(1)
+    };
+  };
+
+  const ProgressBar = ({ progress }) => (
+    <div className="w-full mb-12">
+      <div className="flex justify-between text-sm text-gray-600 mb-2">
+        <span>Stage 1 of 3: Inputs</span>
+        <span>{progress}% Complete</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-3">
+        <div 
+          className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
+  );
+
+  const InputSection = ({ icon: Icon, title, children }) => (
+    <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 mb-8">
+      <div className="flex items-center mb-6">
+        <div className="p-3 rounded-lg bg-blue-50 mr-4">
+          <Icon className="w-6 h-6 text-blue-600" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+      </div>
+      {children}
+    </div>
+  );
+
+  const Page1A = () => (
+    <div className="space-y-8">
+      <InputSection icon={Target} title="Objective & KPIs">
+        <textarea
+          className="w-full p-4 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          rows="4"
+          placeholder="Generate 100 demo signups in 60 days (~10–12% conv. rate)"
+          value={formData.objective}
+          onChange={(e) => handleInputChange('objective', e.target.value)}
+        />
+      </InputSection>
+
+      <InputSection icon={BarChart3} title="Success Metrics">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Primary KPI</label>
+            <input
+              type="text"
+              className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Demo Sign-ups"
+              value={formData.primaryKPI}
+              onChange={(e) => handleInputChange('primaryKPI', e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Secondary KPI</label>
+            <input
+              type="text"
+              className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="PDF Downloads"
+              value={formData.secondaryKPI}
+              onChange={(e) => handleInputChange('secondaryKPI', e.target.value)}
+            />
+          </div>
+        </div>
+      </InputSection>
+    </div>
+  );
+
+  const Page1B = () => (
+    <div className="space-y-8">
+      <InputSection icon={Palette} title="Brand Elements">
+        <textarea
+          className="w-full p-4 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          rows="4"
+          placeholder="Deep Blue & White; Tone: Bold, Approachable, Professional"
+          value={formData.brandElements}
+          onChange={(e) => handleInputChange('brandElements', e.target.value)}
+        />
+      </InputSection>
+
+      <InputSection icon={Users} title="ICP (Ideal Customer Profile)">
+        <textarea
+          className="w-full p-4 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          rows="4"
+          placeholder="Midmarket CMOs / VPs Marketing at SaaS firms with 50-500 employees, $10M+ ARR"
+          value={formData.idealCustomer}
+          onChange={(e) => handleInputChange('idealCustomer', e.target.value)}
+        />
+      </InputSection>
+    </div>
+  );
+
+  const Page1C = () => (
+    <div className="space-y-8">
+      <InputSection icon={BarChart3} title="Deliverables">
+        <div className="grid grid-cols-2 gap-4">
+          {['Landing Page', 'Campaign Visuals', 'Email Templates', 'Social Assets'].map(option => (
+            <label key={option} className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.deliverables.includes(option)}
+                onChange={(e) => handleCheckboxChange('deliverables', option, e.target.checked)}
+                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-gray-700 font-medium">{option}</span>
+            </label>
+          ))}
+        </div>
+      </InputSection>
+
+      <InputSection icon={Target} title="Channel Focus">
+        <div className="grid grid-cols-2 gap-4">
+          {['Paid Social', 'LinkedIn', 'Email Marketing', 'Organic Web'].map(option => (
+            <label key={option} className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.channels.includes(option)}
+                onChange={(e) => handleCheckboxChange('channels', option, e.target.checked)}
+                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-gray-700 font-medium">{option}</span>
+            </label>
+          ))}
+        </div>
+      </InputSection>
+    </div>
+  );
+
+  const Page1D = () => (
+    <div className="space-y-8">
+      <InputSection icon={MousePointer} title="Primary CTA">
+        <input
+          type="text"
+          className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+          placeholder="Download Our App"
+          value={formData.primaryCTA}
+          onChange={(e) => handleInputChange('primaryCTA', e.target.value)}
+        />
+      </InputSection>
+
+      <InputSection icon={Target} title="Secondary CTA(s)">
+        <div className="space-y-4">
+          {formData.secondaryCTAs.map((cta, index) => (
+            <input
+              key={index}
+              type="text"
+              className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Join Loyalty Program"
+              value={cta}
+              onChange={(e) => handleSecondaryChange(index, e.target.value)}
+            />
+          ))}
+          <button
+            onClick={handleAddSecondary}
+            className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-300 hover:text-blue-600 transition-colors"
+          >
+            + Add Secondary CTA
+          </button>
+        </div>
+      </InputSection>
+    </div>
+  );
+
+  const Page1E = () => (
+    <div className="space-y-8">
+      {/* AI Generated Summary */}
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100">
+        <div className="flex items-center mb-6">
+          <div className="p-3 rounded-lg bg-blue-100 mr-4">
+            <Sparkles className="w-6 h-6 text-blue-600" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900">✨ AI-Generated Campaign Summary</h3>
+        </div>
+        <div className="bg-white rounded-lg p-6 shadow-sm">
+          <p className="text-gray-700 leading-relaxed">
+            <strong>Campaign Overview:</strong> Mobile app promotion for regional coffee chain's seasonal pumpkin spice menu launch. 
+            Targeting coffee enthusiasts aged 25-45 with warm, autumn-inspired creative. Primary goal: 500 app downloads in 30 days 
+            with 8-12% conversion rate. Secondary goal: 200 loyalty sign-ups. Budget allocation: 65% creative development, 35% paid media. 
+            Primary CTA: "Download Our App" with secondary focus on loyalty program enrollment. Multi-channel approach via paid social 
+            and email marketing to maximize reach and frequency among target suburban families and young professionals.
+          </p>
+        </div>
+      </div>
+
+      {/* Data Availability Checklist */}
+      <InputSection icon={CheckCircle2} title="📊 Data Availability Checklist">
+        <div className="grid grid-cols-1 gap-4">
+          {[
+            'App store conversion rates & download attribution data',
+            'Historical seasonal campaign performance (last 2 years)',
+            'Email list engagement metrics & segmentation data', 
+            'Social media CTR benchmarks by platform & audience',
+            'Customer acquisition cost (CAC) for app downloads',
+            'Loyalty program conversion & retention rates',
+            'Mobile user behavior analytics & session data',
+            'Competitor campaign performance & spend estimates'
+          ].map(item => (
+            <label key={item} className="flex items-start space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.dataChecklist.includes(item)}
+                onChange={(e) => handleDataChecklistChange(item, e.target.checked)}
+                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5"
+              />
+              <span className="text-gray-700 leading-relaxed">{item}</span>
+            </label>
+          ))}
+        </div>
+      </InputSection>
+    </div>
+  );
+
+  const SliderControl = ({ label, value, min, max, step = 1, unit = '', onChange }) => (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <span className="text-lg font-semibold text-blue-600">{value}{unit}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+        style={{
+          background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((value - min) / (max - min)) * 100}%, #E5E7EB ${((value - min) / (max - min)) * 100}%, #E5E7EB 100%)`
+        }}
+      />
+      <div className="flex justify-between text-xs text-gray-500">
+        <span>{min}{unit}</span>
+        <span>{max}{unit}</span>
+      </div>
+    </div>
+  );
+
+  const ToggleControl = ({ label, options, value, onChange }) => (
+    <div className="space-y-4">
+      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <div className="flex bg-gray-100 rounded-lg p-1">
+        {options.map((option) => (
+          <button
+            key={option}
+            onClick={() => onChange(option)}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              value === option
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const Page2A = () => (
+    <div className="space-y-8">
+      <div className="text-center mb-8">
+        <p className="text-gray-600">Adjust the levers below to simulate different campaign scenarios</p>
+      </div>
+
+      <InputSection icon={Sliders} title="Budget Allocation">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <SliderControl
+              label="Design & Creative"
+              value={formData.budgetDesign}
+              min={40}
+              max={80}
+              unit="%"
+              onChange={(value) => handleSliderChange('budgetDesign', value)}
+            />
+          </div>
+          <div>
+            <SliderControl
+              label="Media & Distribution"
+              value={formData.budgetMedia}
+              min={20}
+              max={60}
+              unit="%"
+              onChange={() => {}} // Read-only, updates automatically
+            />
+          </div>
+        </div>
+      </InputSection>
+
+      <InputSection icon={Target} title="Audience & Performance">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <SliderControl
+            label="Audience Size"
+            value={formData.audienceSize}
+            min={10000}
+            max={100000}
+            step={5000}
+            onChange={(value) => handleSliderChange('audienceSize', value)}
+          />
+          <SliderControl
+            label="Response Rate (CTR)"
+            value={formData.responseRate}
+            min={1}
+            max={6}
+            step={0.5}
+            unit="%"
+            onChange={(value) => handleSliderChange('responseRate', value)}
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+          <SliderControl
+            label="Conversion Rate"
+            value={formData.conversionRate}
+            min={5}
+            max={20}
+            unit="%"
+            onChange={(value) => handleSliderChange('conversionRate', value)}
+          />
+          <SliderControl
+            label="ROI Target"
+            value={formData.roiTarget}
+            min={2}
+            max={5}
+            step={0.5}
+            unit="x"
+            onChange={(value) => handleSliderChange('roiTarget', value)}
+          />
+        </div>
+      </InputSection>
+
+      <InputSection icon={MousePointer} title="CTA Strategy">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <ToggleControl
+            label="CTA Placement"
+            options={['Above Fold', 'Mid-Page', 'Bottom']}
+            value={formData.ctaPlacement}
+            onChange={(value) => handleToggleChange('ctaPlacement', value)}
+          />
+          <ToggleControl
+            label="CTA Mix"
+            options={['App Only', 'App + Loyalty']}
+            value={formData.ctaMix}
+            onChange={(value) => handleToggleChange('ctaMix', value)}
+          />
+        </div>
+      </InputSection>
+    </div>
+  );
+
+  const GaugeChart = ({ value, max, label, color = "blue" }) => {
+    const percentage = (value / max) * 100;
+    const angle = (percentage / 100) * 180;
+    
+    return (
+      <div className="flex flex-col items-center">
+        <div className="relative w-32 h-16 mb-4">
+          <svg className="w-32 h-16" viewBox="0 0 128 64">
+            <path
+              d="M 10 54 A 54 54 0 0 1 118 54"
+              stroke="#E5E7EB"
+              strokeWidth="8"
+              fill="none"
+            />
+            <path
+              d="M 10 54 A 54 54 0 0 1 118 54"
+              stroke={color === "blue" ? "#3B82F6" : "#F59E0B"}
+              strokeWidth="8"
+              fill="none"
+              strokeDasharray={`${(angle / 180) * 170} 170`}
+              className="transition-all duration-700"
+            />
+            <circle cx="64" cy="54" r="4" fill={color === "blue" ? "#3B82F6" : "#F59E0B"} />
+          </svg>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-gray-900">{value}%</div>
+          <div className="text-sm text-gray-600">{label}</div>
+        </div>
+      </div>
+    );
+  };
+
+  const Page2B = () => {
+    const outputs = calculateOutputs();
+    
+    return (
+      <div className="space-y-8">
+        <div className="text-center mb-8">
+          <p className="text-gray-600">Based on your inputs, here's what Certatude predicts:</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Engagement Gauge */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+            <GaugeChart value={outputs.engagementRate} max={25} label="Engagement Rate" />
+          </div>
+
+          {/* Conversion Potential */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+            <div className="mb-4">
+              <Gauge className="w-8 h-8 text-blue-600 mx-auto" />
+            </div>
+            <div className={`text-2xl font-bold mb-2 ${
+              outputs.conversionPotential === 'High' ? 'text-green-600' :
+              outputs.conversionPotential === 'Moderate' ? 'text-orange-600' : 'text-red-600'
+            }`}>
+              {outputs.conversionPotential}
+            </div>
+            <div className="text-sm text-gray-600">Conversion Potential</div>
+          </div>
+
+          {/* ROI Range */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+            <div className="mb-4">
+              <TrendingUp className="w-8 h-8 text-blue-600 mx-auto" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900 mb-2">
+              {outputs.roiLow}x - {outputs.roiHigh}x
+            </div>
+            <div className="text-sm text-gray-600">ROI Range</div>
+          </div>
+        </div>
+
+        {/* AI Insights */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100">
+          <div className="flex items-center mb-6">
+            <div className="p-3 rounded-lg bg-blue-100 mr-4">
+              <Sparkles className="w-6 h-6 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900">🎯 AI Campaign Insights</h3>
+          </div>
+          <div className="space-y-4">
+            <p className="text-gray-700">
+              <strong>Optimization Opportunity:</strong> {formData.ctaPlacement === 'Above Fold' 
+                ? 'Great placement! Above-fold CTAs typically see 15-25% higher conversion rates for mobile apps.'
+                : formData.ctaPlacement === 'Mid-Page'
+                ? 'Consider moving your CTA above the fold to potentially lift conversions by 8-12%.'
+                : 'Bottom placement may hurt performance. Moving to above-fold could increase conversions by 15-20%.'
+              }
+            </p>
+            <p className="text-gray-700">
+              <strong>Budget Allocation:</strong> Your {formData.budgetDesign}% design allocation {formData.budgetDesign >= 60 
+                ? 'supports strong creative quality, which is crucial for visual platforms like social media.'
+                : 'may be low for visual channels. Consider increasing design budget to 60%+ for better creative impact.'
+              }
+            </p>
+            <div className="bg-white rounded-lg p-4 mt-4">
+              <strong className="text-orange-600">💡 Next Steps:</strong>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li>A/B test CTA placement with 20% of traffic</li>
+                <li>Create seasonal urgency messaging ("Limited time pumpkin flavors")</li>
+                <li>Implement loyalty program incentives for app downloads</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Solution Mapping */}
+        <InputSection icon={Target} title="🎯 Recommended Certatude Solutions">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { name: 'Marketing Performance & Attribution', desc: 'Track app downloads across all touchpoints' },
+              { name: 'Audience & Targeting Intelligence', desc: 'Optimize reach to coffee enthusiasts' },
+              { name: 'Predictive Analytics & AI', desc: 'Forecast seasonal campaign performance' },
+              { name: 'Data Infrastructure & Reporting', desc: 'Unified dashboard for app + loyalty metrics' }
+            ].map((solution, index) => (
+              <div key={index} className="bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 transition-colors">
+                <div className="font-medium text-gray-900">{solution.name}</div>
+                <div className="text-sm text-gray-600 mt-1">{solution.desc}</div>
+              </div>
+            ))}
+          </div>
+        </InputSection>
+      </div>
+    );
+  };
+
+  const Navigation = () => {
+    const totalPages = 7;
+    const isLastPage = currentPage >= totalPages - 1;
+    
+    return (
+      <div className="flex justify-between items-center pt-8 border-t border-gray-200">
+        <button
+          onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+          disabled={currentPage === 0}
+          className="flex items-center px-6 py-3 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5 mr-2" />
+          Previous
+        </button>
+        
+        <div className="flex space-x-2">
+          {[0,1,2,3,4,5,6].map((index) => (
+            <div
+              key={index}
+              className={`w-3 h-3 rounded-full transition-colors ${
+                index === currentPage ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <span className="text-sm text-gray-500">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            onClick={() => {
+              if (!isLastPage) {
+                setCurrentPage(currentPage + 1);
+              }
+            }}
+            disabled={isLastPage}
+            className="flex items-center px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 0: return <Page1A />;
+      case 1: return <Page1B />;
+      case 2: return <Page1C />;
+      case 3: return <Page1D />;
+      case 4: return <Page1E />;
+      case 5: return <Page2A />;
+      case 6: return <Page2B />;
+      default: return <Page1A />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Page {pages[currentPage]?.id || '1A'} – {pages[currentPage]?.title || 'Loading...'}
+              </h1>
+              <p className="text-gray-600 mt-1">Howard Design × Certatude Creative Brief</p>
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-gray-500">Certatude</div>
+              <div className="text-lg font-bold text-blue-600">Solutions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-8 py-12">
+        <ProgressBar progress={pages[currentPage]?.progress || 15} />
+        
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+          {renderCurrentPage()}
+          <Navigation />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="text-center py-8 text-gray-500 text-sm">
+        Proprietary and Confidential 2025 | Certatude Solutions
+      </div>
+    </div>
+  );
+};
+
+export default CertatudeHowardDeck;
