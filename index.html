@@ -1,687 +1,1184 @@
-import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, Target, BarChart3, Palette, Users, MousePointer, Sparkles, CheckCircle2, Sliders, Gauge, TrendingUp } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certatude x Howard Design Concept Deck</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-const CertatudeHowardDeck = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-  
-  // Define pages array
-  const pages = [
-    { id: '1A', title: 'Project Goals', progress: 15 },
-    { id: '1B', title: 'Brand & Audience', progress: 30 },
-    { id: '1C', title: 'Deliverables & Channels', progress: 45 },
-    { id: '1D', title: 'CTAs', progress: 60 },
-    { id: '1E', title: 'Summary & Data Checklist', progress: 75 },
-    { id: '2A', title: 'Simulation Levers', progress: 85 },
-    { id: '2B', title: 'Simulation Outputs', progress: 100 }
-  ];
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f9fafb;
+            min-height: 100vh;
+        }
 
-  const [formData, setFormData] = useState({
-    objective: 'Drive 500 new mobile app downloads and 200 loyalty program sign-ups in 30 days for our new seasonal pumpkin spice menu launch. Target 8-12% conversion rate from social ads to app download.',
-    primaryKPI: 'Mobile App Downloads (500 target)',
-    secondaryKPI: 'Loyalty Sign-ups (200 target)',
-    brandElements: 'Warm Orange (#F97316) & Cream (#FEF3C7) with deep Brown accents (#92400E). Tone: Cozy, seasonal, community-focused. Autumn-inspired with coffee shop warmth.',
-    idealCustomer: 'Coffee lovers aged 25-45, household income $50K+, suburban families and young professionals. Values convenience, quality, and seasonal experiences.',
-    deliverables: ['Landing Page', 'Social Assets'],
-    channels: ['Paid Social', 'Email Marketing'],
-    primaryCTA: '',
-    secondaryCTAs: [],
-    dataChecklist: [],
-    // Simulation levers
-    budgetDesign: 65,
-    budgetMedia: 35,
-    audienceSize: 25000,
-    responseRate: 3.5,
-    conversionRate: 10,
-    ctaPlacement: 'Above Fold',
-    ctaMix: 'App + Loyalty',
-    roiTarget: 3.5
-  });
+        .header {
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+        .header-content {
+            max-width: 1152px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-  const handleCheckboxChange = (field, option, checked) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: checked 
-        ? [...prev[field], option]
-        : prev[field].filter(item => item !== option)
-    }));
-  };
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #111827;
+        }
 
-  const handleAddSecondary = () => {
-    setFormData(prev => ({
-      ...prev,
-      secondaryCTAs: [...prev.secondaryCTAs, '']
-    }));
-  };
+        .header-title p {
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
 
-  const handleSecondaryChange = (index, value) => {
-    setFormData(prev => ({
-      ...prev,
-      secondaryCTAs: prev.secondaryCTAs.map((cta, i) => i === index ? value : cta)
-    }));
-  };
+        .header-brand {
+            text-align: right;
+        }
 
-  const handleDataChecklistChange = (item, checked) => {
-    setFormData(prev => ({
-      ...prev,
-      dataChecklist: checked 
-        ? [...prev.dataChecklist, item]
-        : prev.dataChecklist.filter(i => i !== item)
-    }));
-  };
+        .header-brand-small {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
 
-  const handleSliderChange = (field, value) => {
-    if (field === 'budgetDesign') {
-      setFormData(prev => ({
-        ...prev,
-        budgetDesign: value,
-        budgetMedia: 100 - value
-      }));
-    } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
-    }
-  };
+        .header-brand-large {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
 
-  const handleToggleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+        .main-content {
+            max-width: 896px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
 
-  // Calculate simulation outputs based on current settings
-  const calculateOutputs = () => {
-    const engagementRate = Math.max(8, Math.min(25, 
-      (formData.responseRate * 1.5) + 
-      (formData.ctaPlacement === 'Above Fold' ? 3 : formData.ctaPlacement === 'Mid-Page' ? 1 : -1) +
-      (formData.budgetDesign / 100 * 5)
-    ));
+        .progress-bar-container {
+            width: 100%;
+            margin-bottom: 3rem;
+        }
 
-    const conversionPotential = formData.conversionRate > 12 ? 'High' : 
-                               formData.conversionRate > 8 ? 'Moderate' : 'Low';
+        .progress-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
 
-    const roiLow = Math.max(2.0, formData.roiTarget - 0.8 + (formData.budgetMedia / 100));
-    const roiHigh = Math.min(5.0, formData.roiTarget + 0.7 + (formData.budgetMedia / 100));
+        .progress-bar-bg {
+            width: 100%;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            height: 0.75rem;
+        }
 
-    return {
-      engagementRate: engagementRate.toFixed(1),
-      conversionPotential,
-      roiLow: roiLow.toFixed(1),
-      roiHigh: roiHigh.toFixed(1)
+        .progress-bar-fill {
+            height: 0.75rem;
+            border-radius: 9999px;
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            transition: width 0.5s ease-out;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            border: 1px solid #f3f4f6;
+        }
+
+        .input-section {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            border: 1px solid #f3f4f6;
+            margin-bottom: 2rem;
+        }
+
+        .input-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-section-icon {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #eff6ff;
+            margin-right: 1rem;
+        }
+
+        .input-section-icon svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: #2563eb;
+        }
+
+        .input-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .textarea-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .textarea-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+        }
+
+        .checkbox-label:hover {
+            background-color: #f9fafb;
+        }
+
+        .checkbox-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            accent-color: #2563eb;
+        }
+
+        .checkbox-text {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .button-add {
+            width: 100%;
+            padding: 1rem;
+            border: 2px dashed #d1d5db;
+            border-radius: 0.5rem;
+            background: white;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .button-add:hover {
+            border-color: #93c5fd;
+            color: #2563eb;
+        }
+
+        .ai-summary-box {
+            background: linear-gradient(to bottom right, #eff6ff, #eef2ff);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            border: 1px solid #dbeafe;
+            margin-bottom: 2rem;
+        }
+
+        .ai-summary-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .ai-summary-text {
+            color: #374151;
+            line-height: 1.625;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .nav-button-prev {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .nav-button-prev:hover:not(:disabled) {
+            background-color: #e5e7eb;
+        }
+
+        .nav-button-next {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .nav-button-next:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-dot-active {
+            background-color: #2563eb;
+        }
+
+        .nav-dot-inactive {
+            background-color: #d1d5db;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .slider-control {
+            margin-bottom: 2rem;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .slider-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .slider-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .slider-input {
+            width: 100%;
+            height: 0.5rem;
+            border-radius: 0.5rem;
+            appearance: none;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+        }
+
+        .slider-input::-moz-range-thumb {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .toggle-control {
+            margin-bottom: 2rem;
+        }
+
+        .toggle-buttons {
+            display: flex;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+        }
+
+        .toggle-button {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .toggle-button-active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gauge-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .gauge-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .metric-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            border: 1px solid #f3f4f6;
+            text-align: center;
+        }
+
+        .solution-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            transition: border-color 0.2s;
+        }
+
+        .solution-card:hover {
+            border-color: #93c5fd;
+        }
+
+        .solution-name {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .solution-desc {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-brand {
+                text-align: left;
+            }
+        }
+
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 id="pageTitle">Page 1A – Project Goals</h1>
+                <p>Howard Design × Certatude Creative Brief</p>
+            </div>
+            <div class="header-brand">
+                <div class="header-brand-small">Certatude</div>
+                <div class="header-brand-large">Solutions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar-labels">
+                <span>Stage 1 of 3: Inputs</span>
+                <span id="progressText">15% Complete</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill" style="width: 15%"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <!-- Page 1A -->
+            <div id="page1A">
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Objective & KPIs</h3>
+                    </div>
+                    <textarea id="objective" class="textarea-input" rows="4" placeholder="Generate 100 demo signups in 60 days (~10–12% conv. rate)">Drive 500 new mobile app downloads and 200 loyalty program sign-ups in 30 days for our new seasonal pumpkin spice menu launch. Target 8-12% conversion rate from social ads to app download.</textarea>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Success Metrics</h3>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label class="form-label">Primary KPI</label>
+                            <input id="primaryKPI" type="text" class="text-input" placeholder="Demo Sign-ups" value="Mobile App Downloads (500 target)">
+                        </div>
+                        <div>
+                            <label class="form-label">Secondary KPI</label>
+                            <input id="secondaryKPI" type="text" class="text-input" placeholder="PDF Downloads" value="Loyalty Sign-ups (200 target)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 1B -->
+            <div id="page1B" class="hidden">
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Brand Elements</h3>
+                    </div>
+                    <textarea id="brandElements" class="textarea-input" rows="4" placeholder="Deep Blue & White; Tone: Bold, Approachable, Professional">Warm Orange (#F97316) & Cream (#FEF3C7) with deep Brown accents (#92400E). Tone: Cozy, seasonal, community-focused. Autumn-inspired with coffee shop warmth.</textarea>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">ICP (Ideal Customer Profile)</h3>
+                    </div>
+                    <textarea id="idealCustomer" class="textarea-input" rows="4" placeholder="Midmarket CMOs / VPs Marketing at SaaS firms with 50-500 employees, $10M+ ARR">Coffee lovers aged 25-45, household income $50K+, suburban families and young professionals. Values convenience, quality, and seasonal experiences.</textarea>
+                </div>
+            </div>
+
+            <!-- Page 1C -->
+            <div id="page1C" class="hidden">
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Deliverables</h3>
+                    </div>
+                    <div class="checkbox-grid" id="deliverablesGrid"></div>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Channel Focus</h3>
+                    </div>
+                    <div class="checkbox-grid" id="channelsGrid"></div>
+                </div>
+            </div>
+
+            <!-- Page 1D -->
+            <div id="page1D" class="hidden">
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Primary CTA</h3>
+                    </div>
+                    <input id="primaryCTA" type="text" class="text-input" placeholder="Download Our App" style="font-size: 1.125rem;">
+                </div>
+
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Secondary CTA(s)</h3>
+                    </div>
+                    <div id="secondaryCTAsContainer" class="space-y-4"></div>
+                    <button onclick="addSecondaryCTA()" class="button-add">+ Add Secondary CTA</button>
+                </div>
+            </div>
+
+            <!-- Page 1E -->
+            <div id="page1E" class="hidden">
+                <div class="ai-summary-box">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">✨ AI-Generated Campaign Summary</h3>
+                    </div>
+                    <div class="ai-summary-content">
+                        <p class="ai-summary-text">
+                            <strong>Campaign Overview:</strong> Mobile app promotion for regional coffee chain's seasonal pumpkin spice menu launch. 
+                            Targeting coffee enthusiasts aged 25-45 with warm, autumn-inspired creative. Primary goal: 500 app downloads in 30 days 
+                            with 8-12% conversion rate. Secondary goal: 200 loyalty sign-ups. Budget allocation: 65% creative development, 35% paid media. 
+                            Primary CTA: "Download Our App" with secondary focus on loyalty program enrollment. Multi-channel approach via paid social 
+                            and email marketing to maximize reach and frequency among target suburban families and young professionals.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">📊 Data Availability Checklist</h3>
+                    </div>
+                    <div id="dataChecklistContainer" style="display: grid; grid-template-columns: 1fr; gap: 1rem;"></div>
+                </div>
+            </div>
+
+            <!-- Page 2A -->
+            <div id="page2A" class="hidden">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <p style="color: #6b7280;">Adjust the levers below to simulate different campaign scenarios</p>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Budget Allocation</h3>
+                    </div>
+                    <div class="grid-2">
+                        <div class="slider-control">
+                            <div class="slider-header">
+                                <label class="slider-label">Design & Creative</label>
+                                <span class="slider-value" id="budgetDesignValue">65%</span>
+                            </div>
+                            <input type="range" class="slider-input" id="budgetDesign" min="40" max="80" value="65" oninput="updateBudgetSlider(this.value)">
+                            <div class="slider-labels">
+                                <span>40%</span>
+                                <span>80%</span>
+                            </div>
+                        </div>
+                        <div class="slider-control">
+                            <div class="slider-header">
+                                <label class="slider-label">Media & Distribution</label>
+                                <span class="slider-value" id="budgetMediaValue">35%</span>
+                            </div>
+                            <input type="range" class="slider-input" id="budgetMedia" min="20" max="60" value="35" disabled style="opacity: 0.6;">
+                            <div class="slider-labels">
+                                <span>20%</span>
+                                <span>60%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-section-header">
+                        <div class="input-section-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="input-section-title">Audience & Performance</h3>
+                    </div>
+                    <div class="grid-2">
+                        <div class="slider-control">
+                            <div class="slider-header">
+                                <label class="slider-label">Audience Size</label>
+                                <span class="slider-value" id="audienceSizeValue">25000</span>
+                            </div>
+                            <input type="range" class="slider-input" id="audienceSize" min="10000" max="100000" step="5000" value="25000" oninput="updateSlider('audienceSize', this.value, '')">
+                            <div class="slider-labels">
+                                <span>10000</span>
+                                <span>100000</span>
+                            </div>
+                        </div>
+                        <div class="slider-control">
+                            <div class="slider-header">
+                                <label class="slider-label">Response Rate (CTR)</label>
+                                <span class="slider-value" id="responseRateValue">3.5%</span>
+                            </div>
+                            <input type="range" class="slider-input" id="responseRate" min="1" max="6"
+
+
+<div class="input-section">
+                <div class="input-section-header">
+                    <div class="input-section-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+                        </svg>
+                    </div>
+                    <h3 class="input-section-title">CTA Strategy</h3>
+                </div>
+                <div class="grid-2">
+                    <div class="toggle-control">
+                        <label class="slider-label">CTA Placement</label>
+                        <div class="toggle-buttons" id="ctaPlacementToggle">
+                            <button class="toggle-button toggle-button-active" onclick="setToggle('ctaPlacement', 'Above Fold')">Above Fold</button>
+                            <button class="toggle-button" onclick="setToggle('ctaPlacement', 'Mid-Page')">Mid-Page</button>
+                            <button class="toggle-button" onclick="setToggle('ctaPlacement', 'Bottom')">Bottom</button>
+                        </div>
+                    </div>
+                    <div class="toggle-control">
+                        <label class="slider-label">CTA Mix</label>
+                        <div class="toggle-buttons" id="ctaMixToggle">
+                            <button class="toggle-button" onclick="setToggle('ctaMix', 'App Only')">App Only</button>
+                            <button class="toggle-button toggle-button-active" onclick="setToggle('ctaMix', 'App + Loyalty')">App + Loyalty</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 2B -->
+        <div id="page2B" class="hidden">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <p style="color: #6b7280;">Based on your inputs, here's what Certatude predicts:</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="metric-card">
+                    <div class="gauge-container">
+                        <div style="margin-bottom: 1rem;">
+                            <svg width="128" height="64" viewBox="0 0 128 64">
+                                <path d="M 10 54 A 54 54 0 0 1 118 54" stroke="#E5E7EB" stroke-width="8" fill="none"/>
+                                <path id="gaugeArc" d="M 10 54 A 54 54 0 0 1 118 54" stroke="#3B82F6" stroke-width="8" fill="none" stroke-dasharray="0 170"/>
+                                <circle cx="64" cy="54" r="4" fill="#3B82F6"/>
+                            </svg>
+                        </div>
+                        <div class="gauge-value" id="engagementRate">15.8%</div>
+                        <div class="gauge-label">Engagement Rate</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div style="margin-bottom: 1rem;">
+                        <svg width="32" height="32" fill="none" stroke="#2563eb" viewBox="0 0 24 24" style="margin: 0 auto;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div class="gauge-value" id="conversionPotential" style="color: #16a34a;">Moderate</div>
+                    <div class="gauge-label">Conversion Potential</div>
+                </div>
+
+                <div class="metric-card">
+                    <div style="margin-bottom: 1rem;">
+                        <svg width="32" height="32" fill="none" stroke="#2563eb" viewBox="0 0 24 24" style="margin: 0 auto;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                    <div class="gauge-value" id="roiRange">2.9x - 4.6x</div>
+                    <div class="gauge-label">ROI Range</div>
+                </div>
+            </div>
+
+            <div class="ai-summary-box">
+                <div class="input-section-header">
+                    <div class="input-section-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        </svg>
+                    </div>
+                    <h3 class="input-section-title">🎯 AI Campaign Insights</h3>
+                </div>
+                <div style="background-color: white; border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+                    <div class="space-y-4">
+                        <p class="ai-summary-text" id="placementInsight">
+                            <strong>Optimization Opportunity:</strong> Great placement! Above-fold CTAs typically see 15-25% higher conversion rates for mobile apps.
+                        </p>
+                        <p class="ai-summary-text" id="budgetInsight">
+                            <strong>Budget Allocation:</strong> Your 65% design allocation supports strong creative quality, which is crucial for visual platforms like social media.
+                        </p>
+                        <div style="background-color: white; border-radius: 0.5rem; padding: 1rem; margin-top: 1rem; border: 1px solid #fed7aa;">
+                            <strong style="color: #ea580c;">💡 Next Steps:</strong>
+                            <ul style="list-style: disc; margin-left: 1.5rem; color: #374151; margin-top: 0.5rem; line-height: 1.75;">
+                                <li>A/B test CTA placement with 20% of traffic</li>
+                                <li>Create seasonal urgency messaging ("Limited time pumpkin flavors")</li>
+                                <li>Implement loyalty program incentives for app downloads</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <div class="input-section-header">
+                    <div class="input-section-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="input-section-title">🎯 Recommended Certatude Solutions</h3>
+                </div>
+                <div class="grid-2">
+                    <div class="solution-card">
+                        <div class="solution-name">Marketing Performance & Attribution</div>
+                        <div class="solution-desc">Track app downloads across all touchpoints</div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-name">Audience & Targeting Intelligence</div>
+                        <div class="solution-desc">Optimize reach to coffee enthusiasts</div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-name">Predictive Analytics & AI</div>
+                        <div class="solution-desc">Forecast seasonal campaign performance</div>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-name">Data Infrastructure & Reporting</div>
+                        <div class="solution-desc">Unified dashboard for app + loyalty metrics</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-button nav-button-prev" onclick="prevPage()" id="prevBtn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Previous
+            </button>
+
+            <div class="nav-dots" id="navDots"></div>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="font-size: 0.875rem; color: #6b7280;" id="pageCounter">Page 1 of 7</span>
+                <button class="nav-button nav-button-next" onclick="nextPage()" id="nextBtn">
+                    Next
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-left: 0.5rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    Proprietary and Confidential 2025 | Certatude Solutions
+</div>
+
+<script>
+    // State management
+    let state = {
+        currentPage: 0,
+        pages: [
+            { id: '1A', title: 'Project Goals', progress: 15 },
+            { id: '1B', title: 'Brand & Audience', progress: 30 },
+            { id: '1C', title: 'Deliverables & Channels', progress: 45 },
+            { id: '1D', title: 'CTAs', progress: 60 },
+            { id: '1E', title: 'Summary & Data Checklist', progress: 75 },
+            { id: '2A', title: 'Simulation Levers', progress: 85 },
+            { id: '2B', title: 'Simulation Outputs', progress: 100 }
+        ],
+        deliverables: ['Landing Page', 'Social Assets'],
+        channels: ['Paid Social', 'Email Marketing'],
+        secondaryCTAs: [],
+        dataChecklist: [],
+        budgetDesign: 65,
+        budgetMedia: 35,
+        audienceSize: 25000,
+        responseRate: 3.5,
+        conversionRate: 10,
+        roiTarget: 3.5,
+        ctaPlacement: 'Above Fold',
+        ctaMix: 'App + Loyalty'
     };
-  };
 
-  const ProgressBar = ({ progress }) => (
-    <div className="w-full mb-12">
-      <div className="flex justify-between text-sm text-gray-600 mb-2">
-        <span>Stage 1 of 3: Inputs</span>
-        <span>{progress}% Complete</span>
-      </div>
-      <div className="w-full bg-gray-200 rounded-full h-3">
-        <div 
-          className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 ease-out"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-    </div>
-  );
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCheckboxes();
+        initializeDataChecklist();
+        updateNavDots();
+        updateSliderBackgrounds();
+    });
 
-  const InputSection = ({ icon: Icon, title, children }) => (
-    <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 mb-8">
-      <div className="flex items-center mb-6">
-        <div className="p-3 rounded-lg bg-blue-50 mr-4">
-          <Icon className="w-6 h-6 text-blue-600" />
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
-      </div>
-      {children}
-    </div>
-  );
+    // Page navigation
+    function nextPage() {
+        if (state.currentPage < state.pages.length - 1) {
+            state.currentPage++;
+            updatePage();
+        }
+    }
 
-  const Page1A = () => (
-    <div className="space-y-8">
-      <InputSection icon={Target} title="Objective & KPIs">
-        <textarea
-          className="w-full p-4 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          rows="4"
-          placeholder="Generate 100 demo signups in 60 days (~10–12% conv. rate)"
-          value={formData.objective}
-          onChange={(e) => handleInputChange('objective', e.target.value)}
-        />
-      </InputSection>
+    function prevPage() {
+        if (state.currentPage > 0) {
+            state.currentPage--;
+            updatePage();
+        }
+    }
 
-      <InputSection icon={BarChart3} title="Success Metrics">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Primary KPI</label>
-            <input
-              type="text"
-              className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Demo Sign-ups"
-              value={formData.primaryKPI}
-              onChange={(e) => handleInputChange('primaryKPI', e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Secondary KPI</label>
-            <input
-              type="text"
-              className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="PDF Downloads"
-              value={formData.secondaryKPI}
-              onChange={(e) => handleInputChange('secondaryKPI', e.target.value)}
-            />
-          </div>
-        </div>
-      </InputSection>
-    </div>
-  );
+    function updatePage() {
+        // Hide all pages
+        for (let i = 0; i < state.pages.length; i++) {
+            const page = document.getElementById(`page${state.pages[i].id}`);
+            if (page) page.classList.add('hidden');
+        }
 
-  const Page1B = () => (
-    <div className="space-y-8">
-      <InputSection icon={Palette} title="Brand Elements">
-        <textarea
-          className="w-full p-4 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          rows="4"
-          placeholder="Deep Blue & White; Tone: Bold, Approachable, Professional"
-          value={formData.brandElements}
-          onChange={(e) => handleInputChange('brandElements', e.target.value)}
-        />
-      </InputSection>
+        // Show current page
+        const currentPageEl = document.getElementById(`page${state.pages[state.currentPage].id}`);
+        if (currentPageEl) currentPageEl.classList.remove('hidden');
 
-      <InputSection icon={Users} title="ICP (Ideal Customer Profile)">
-        <textarea
-          className="w-full p-4 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          rows="4"
-          placeholder="Midmarket CMOs / VPs Marketing at SaaS firms with 50-500 employees, $10M+ ARR"
-          value={formData.idealCustomer}
-          onChange={(e) => handleInputChange('idealCustomer', e.target.value)}
-        />
-      </InputSection>
-    </div>
-  );
+        // Update title and progress
+        const currentPageData = state.pages[state.currentPage];
+        document.getElementById('pageTitle').textContent = `Page ${currentPageData.id} – ${currentPageData.title}`;
+        document.getElementById('progressText').textContent = `${currentPageData.progress}% Complete`;
+        document.getElementById('progressFill').style.width = `${currentPageData.progress}%`;
 
-  const Page1C = () => (
-    <div className="space-y-8">
-      <InputSection icon={BarChart3} title="Deliverables">
-        <div className="grid grid-cols-2 gap-4">
-          {['Landing Page', 'Campaign Visuals', 'Email Templates', 'Social Assets'].map(option => (
-            <label key={option} className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.deliverables.includes(option)}
-                onChange={(e) => handleCheckboxChange('deliverables', option, e.target.checked)}
-                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <span className="text-gray-700 font-medium">{option}</span>
-            </label>
-          ))}
-        </div>
-      </InputSection>
+        // Update navigation
+        document.getElementById('prevBtn').disabled = state.currentPage === 0;
+        document.getElementById('nextBtn').disabled = state.currentPage === state.pages.length - 1;
+        document.getElementById('pageCounter').textContent = `Page ${state.currentPage + 1} of ${state.pages.length}`;
+        updateNavDots();
 
-      <InputSection icon={Target} title="Channel Focus">
-        <div className="grid grid-cols-2 gap-4">
-          {['Paid Social', 'LinkedIn', 'Email Marketing', 'Organic Web'].map(option => (
-            <label key={option} className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.channels.includes(option)}
-                onChange={(e) => handleCheckboxChange('channels', option, e.target.checked)}
-                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <span className="text-gray-700 font-medium">{option}</span>
-            </label>
-          ))}
-        </div>
-      </InputSection>
-    </div>
-  );
+        // If we're on page 2B, calculate outputs
+        if (state.currentPage === 6) {
+            calculateOutputs();
+        }
+    }
 
-  const Page1D = () => (
-    <div className="space-y-8">
-      <InputSection icon={MousePointer} title="Primary CTA">
-        <input
-          type="text"
-          className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-          placeholder="Download Our App"
-          value={formData.primaryCTA}
-          onChange={(e) => handleInputChange('primaryCTA', e.target.value)}
-        />
-      </InputSection>
+    function updateNavDots() {
+        const dotsContainer = document.getElementById('navDots');
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < state.pages.length; i++) {
+            const dot = document.createElement('div');
+            dot.className = `nav-dot ${i === state.currentPage ? 'nav-dot-active' : 'nav-dot-inactive'}`;
+            dotsContainer.appendChild(dot);
+        }
+    }
 
-      <InputSection icon={Target} title="Secondary CTA(s)">
-        <div className="space-y-4">
-          {formData.secondaryCTAs.map((cta, index) => (
-            <input
-              key={index}
-              type="text"
-              className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Join Loyalty Program"
-              value={cta}
-              onChange={(e) => handleSecondaryChange(index, e.target.value)}
-            />
-          ))}
-          <button
-            onClick={handleAddSecondary}
-            className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-300 hover:text-blue-600 transition-colors"
-          >
-            + Add Secondary CTA
-          </button>
-        </div>
-      </InputSection>
-    </div>
-  );
+    // Initialize deliverables checkboxes
+    function initializeCheckboxes() {
+        const deliverableOptions = ['Landing Page', 'Campaign Visuals', 'Email Templates', 'Social Assets'];
+        const channelOptions = ['Paid Social', 'LinkedIn', 'Email Marketing', 'Organic Web'];
 
-  const Page1E = () => (
-    <div className="space-y-8">
-      {/* AI Generated Summary */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100">
-        <div className="flex items-center mb-6">
-          <div className="p-3 rounded-lg bg-blue-100 mr-4">
-            <Sparkles className="w-6 h-6 text-blue-600" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900">✨ AI-Generated Campaign Summary</h3>
-        </div>
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <p className="text-gray-700 leading-relaxed">
-            <strong>Campaign Overview:</strong> Mobile app promotion for regional coffee chain's seasonal pumpkin spice menu launch. 
-            Targeting coffee enthusiasts aged 25-45 with warm, autumn-inspired creative. Primary goal: 500 app downloads in 30 days 
-            with 8-12% conversion rate. Secondary goal: 200 loyalty sign-ups. Budget allocation: 65% creative development, 35% paid media. 
-            Primary CTA: "Download Our App" with secondary focus on loyalty program enrollment. Multi-channel approach via paid social 
-            and email marketing to maximize reach and frequency among target suburban families and young professionals.
-          </p>
-        </div>
-      </div>
+        const deliverablesGrid = document.getElementById('deliverablesGrid');
+        deliverableOptions.forEach(option => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-label';
+            label.innerHTML = `
+                <input type="checkbox" class="checkbox-input" ${state.deliverables.includes(option) ? 'checked' : ''} 
+                       onchange="toggleCheckbox('deliverables', '${option}', this.checked)">
+                <span class="checkbox-text">${option}</span>
+            `;
+            deliverablesGrid.appendChild(label);
+        });
 
-      {/* Data Availability Checklist */}
-      <InputSection icon={CheckCircle2} title="📊 Data Availability Checklist">
-        <div className="grid grid-cols-1 gap-4">
-          {[
+        const channelsGrid = document.getElementById('channelsGrid');
+        channelOptions.forEach(option => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-label';
+            label.innerHTML = `
+                <input type="checkbox" class="checkbox-input" ${state.channels.includes(option) ? 'checked' : ''} 
+                       onchange="toggleCheckbox('channels', '${option}', this.checked)">
+                <span class="checkbox-text">${option}</span>
+            `;
+            channelsGrid.appendChild(label);
+        });
+    }
+
+    function toggleCheckbox(field, option, checked) {
+        if (checked) {
+            if (!state[field].includes(option)) {
+                state[field].push(option);
+            }
+        } else {
+            state[field] = state[field].filter(item => item !== option);
+        }
+    }
+
+    // Secondary CTAs
+    function addSecondaryCTA() {
+        state.secondaryCTAs.push('');
+        renderSecondaryCTAs();
+    }
+
+    function renderSecondaryCTAs() {
+        const container = document.getElementById('secondaryCTAsContainer');
+        container.innerHTML = '';
+        state.secondaryCTAs.forEach((cta, index) => {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'text-input';
+            input.placeholder = 'Join Loyalty Program';
+            input.value = cta;
+            input.style.marginBottom = '1rem';
+            input.oninput = function() {
+                state.secondaryCTAs[index] = this.value;
+            };
+            container.appendChild(input);
+        });
+    }
+
+    // Data Checklist
+    function initializeDataChecklist() {
+        const items = [
             'App store conversion rates & download attribution data',
             'Historical seasonal campaign performance (last 2 years)',
-            'Email list engagement metrics & segmentation data', 
+            'Email list engagement metrics & segmentation data',
             'Social media CTR benchmarks by platform & audience',
             'Customer acquisition cost (CAC) for app downloads',
             'Loyalty program conversion & retention rates',
             'Mobile user behavior analytics & session data',
             'Competitor campaign performance & spend estimates'
-          ].map(item => (
-            <label key={item} className="flex items-start space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.dataChecklist.includes(item)}
-                onChange={(e) => handleDataChecklistChange(item, e.target.checked)}
-                className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5"
-              />
-              <span className="text-gray-700 leading-relaxed">{item}</span>
-            </label>
-          ))}
-        </div>
-      </InputSection>
-    </div>
-  );
+        ];
 
-  const SliderControl = ({ label, value, min, max, step = 1, unit = '', onChange }) => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <label className="text-sm font-medium text-gray-700">{label}</label>
-        <span className="text-lg font-semibold text-blue-600">{value}{unit}</span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-        style={{
-          background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((value - min) / (max - min)) * 100}%, #E5E7EB ${((value - min) / (max - min)) * 100}%, #E5E7EB 100%)`
-        }}
-      />
-      <div className="flex justify-between text-xs text-gray-500">
-        <span>{min}{unit}</span>
-        <span>{max}{unit}</span>
-      </div>
-    </div>
-  );
-
-  const ToggleControl = ({ label, options, value, onChange }) => (
-    <div className="space-y-4">
-      <label className="text-sm font-medium text-gray-700">{label}</label>
-      <div className="flex bg-gray-100 rounded-lg p-1">
-        {options.map((option) => (
-          <button
-            key={option}
-            onClick={() => onChange(option)}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              value === option
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  const Page2A = () => (
-    <div className="space-y-8">
-      <div className="text-center mb-8">
-        <p className="text-gray-600">Adjust the levers below to simulate different campaign scenarios</p>
-      </div>
-
-      <InputSection icon={Sliders} title="Budget Allocation">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <SliderControl
-              label="Design & Creative"
-              value={formData.budgetDesign}
-              min={40}
-              max={80}
-              unit="%"
-              onChange={(value) => handleSliderChange('budgetDesign', value)}
-            />
-          </div>
-          <div>
-            <SliderControl
-              label="Media & Distribution"
-              value={formData.budgetMedia}
-              min={20}
-              max={60}
-              unit="%"
-              onChange={() => {}} // Read-only, updates automatically
-            />
-          </div>
-        </div>
-      </InputSection>
-
-      <InputSection icon={Target} title="Audience & Performance">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <SliderControl
-            label="Audience Size"
-            value={formData.audienceSize}
-            min={10000}
-            max={100000}
-            step={5000}
-            onChange={(value) => handleSliderChange('audienceSize', value)}
-          />
-          <SliderControl
-            label="Response Rate (CTR)"
-            value={formData.responseRate}
-            min={1}
-            max={6}
-            step={0.5}
-            unit="%"
-            onChange={(value) => handleSliderChange('responseRate', value)}
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-          <SliderControl
-            label="Conversion Rate"
-            value={formData.conversionRate}
-            min={5}
-            max={20}
-            unit="%"
-            onChange={(value) => handleSliderChange('conversionRate', value)}
-          />
-          <SliderControl
-            label="ROI Target"
-            value={formData.roiTarget}
-            min={2}
-            max={5}
-            step={0.5}
-            unit="x"
-            onChange={(value) => handleSliderChange('roiTarget', value)}
-          />
-        </div>
-      </InputSection>
-
-      <InputSection icon={MousePointer} title="CTA Strategy">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <ToggleControl
-            label="CTA Placement"
-            options={['Above Fold', 'Mid-Page', 'Bottom']}
-            value={formData.ctaPlacement}
-            onChange={(value) => handleToggleChange('ctaPlacement', value)}
-          />
-          <ToggleControl
-            label="CTA Mix"
-            options={['App Only', 'App + Loyalty']}
-            value={formData.ctaMix}
-            onChange={(value) => handleToggleChange('ctaMix', value)}
-          />
-        </div>
-      </InputSection>
-    </div>
-  );
-
-  const GaugeChart = ({ value, max, label, color = "blue" }) => {
-    const percentage = (value / max) * 100;
-    const angle = (percentage / 100) * 180;
-    
-    return (
-      <div className="flex flex-col items-center">
-        <div className="relative w-32 h-16 mb-4">
-          <svg className="w-32 h-16" viewBox="0 0 128 64">
-            <path
-              d="M 10 54 A 54 54 0 0 1 118 54"
-              stroke="#E5E7EB"
-              strokeWidth="8"
-              fill="none"
-            />
-            <path
-              d="M 10 54 A 54 54 0 0 1 118 54"
-              stroke={color === "blue" ? "#3B82F6" : "#F59E0B"}
-              strokeWidth="8"
-              fill="none"
-              strokeDasharray={`${(angle / 180) * 170} 170`}
-              className="transition-all duration-700"
-            />
-            <circle cx="64" cy="54" r="4" fill={color === "blue" ? "#3B82F6" : "#F59E0B"} />
-          </svg>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-gray-900">{value}%</div>
-          <div className="text-sm text-gray-600">{label}</div>
-        </div>
-      </div>
-    );
-  };
-
-  const Page2B = () => {
-    const outputs = calculateOutputs();
-    
-    return (
-      <div className="space-y-8">
-        <div className="text-center mb-8">
-          <p className="text-gray-600">Based on your inputs, here's what Certatude predicts:</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Engagement Gauge */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
-            <GaugeChart value={outputs.engagementRate} max={25} label="Engagement Rate" />
-          </div>
-
-          {/* Conversion Potential */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
-            <div className="mb-4">
-              <Gauge className="w-8 h-8 text-blue-600 mx-auto" />
-            </div>
-            <div className={`text-2xl font-bold mb-2 ${
-              outputs.conversionPotential === 'High' ? 'text-green-600' :
-              outputs.conversionPotential === 'Moderate' ? 'text-orange-600' : 'text-red-600'
-            }`}>
-              {outputs.conversionPotential}
-            </div>
-            <div className="text-sm text-gray-600">Conversion Potential</div>
-          </div>
-
-          {/* ROI Range */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
-            <div className="mb-4">
-              <TrendingUp className="w-8 h-8 text-blue-600 mx-auto" />
-            </div>
-            <div className="text-2xl font-bold text-gray-900 mb-2">
-              {outputs.roiLow}x - {outputs.roiHigh}x
-            </div>
-            <div className="text-sm text-gray-600">ROI Range</div>
-          </div>
-        </div>
-
-        {/* AI Insights */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100">
-          <div className="flex items-center mb-6">
-            <div className="p-3 rounded-lg bg-blue-100 mr-4">
-              <Sparkles className="w-6 h-6 text-blue-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900">🎯 AI Campaign Insights</h3>
-          </div>
-          <div className="space-y-4">
-            <p className="text-gray-700">
-              <strong>Optimization Opportunity:</strong> {formData.ctaPlacement === 'Above Fold' 
-                ? 'Great placement! Above-fold CTAs typically see 15-25% higher conversion rates for mobile apps.'
-                : formData.ctaPlacement === 'Mid-Page'
-                ? 'Consider moving your CTA above the fold to potentially lift conversions by 8-12%.'
-                : 'Bottom placement may hurt performance. Moving to above-fold could increase conversions by 15-20%.'
-              }
-            </p>
-            <p className="text-gray-700">
-              <strong>Budget Allocation:</strong> Your {formData.budgetDesign}% design allocation {formData.budgetDesign >= 60 
-                ? 'supports strong creative quality, which is crucial for visual platforms like social media.'
-                : 'may be low for visual channels. Consider increasing design budget to 60%+ for better creative impact.'
-              }
-            </p>
-            <div className="bg-white rounded-lg p-4 mt-4">
-              <strong className="text-orange-600">💡 Next Steps:</strong>
-              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
-                <li>A/B test CTA placement with 20% of traffic</li>
-                <li>Create seasonal urgency messaging ("Limited time pumpkin flavors")</li>
-                <li>Implement loyalty program incentives for app downloads</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Solution Mapping */}
-        <InputSection icon={Target} title="🎯 Recommended Certatude Solutions">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { name: 'Marketing Performance & Attribution', desc: 'Track app downloads across all touchpoints' },
-              { name: 'Audience & Targeting Intelligence', desc: 'Optimize reach to coffee enthusiasts' },
-              { name: 'Predictive Analytics & AI', desc: 'Forecast seasonal campaign performance' },
-              { name: 'Data Infrastructure & Reporting', desc: 'Unified dashboard for app + loyalty metrics' }
-            ].map((solution, index) => (
-              <div key={index} className="bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 transition-colors">
-                <div className="font-medium text-gray-900">{solution.name}</div>
-                <div className="text-sm text-gray-600 mt-1">{solution.desc}</div>
-              </div>
-            ))}
-          </div>
-        </InputSection>
-      </div>
-    );
-  };
-
-  const Navigation = () => {
-    const totalPages = 7;
-    const isLastPage = currentPage >= totalPages - 1;
-    
-    return (
-      <div className="flex justify-between items-center pt-8 border-t border-gray-200">
-        <button
-          onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
-          disabled={currentPage === 0}
-          className="flex items-center px-6 py-3 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5 mr-2" />
-          Previous
-        </button>
-        
-        <div className="flex space-x-2">
-          {[0,1,2,3,4,5,6].map((index) => (
-            <div
-              key={index}
-              className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentPage ? 'bg-blue-600' : 'bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <span className="text-sm text-gray-500">
-            Page {currentPage + 1} of {totalPages}
-          </span>
-          <button
-            onClick={() => {
-              if (!isLastPage) {
-                setCurrentPage(currentPage + 1);
-              }
-            }}
-            disabled={isLastPage}
-            className="flex items-center px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Next
-            <ChevronRight className="w-5 h-5 ml-2" />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderCurrentPage = () => {
-    switch (currentPage) {
-      case 0: return <Page1A />;
-      case 1: return <Page1B />;
-      case 2: return <Page1C />;
-      case 3: return <Page1D />;
-      case 4: return <Page1E />;
-      case 5: return <Page2A />;
-      case 6: return <Page2B />;
-      default: return <Page1A />;
+        const container = document.getElementById('dataChecklistContainer');
+        items.forEach(item => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-label';
+            label.style.display = 'flex';
+            label.style.alignItems = 'start';
+            label.innerHTML = `
+                <input type="checkbox" class="checkbox-input" style="margin-top: 0.125rem;" 
+                       onchange="toggleDataChecklist('${item}', this.checked)">
+                <span class="checkbox-text" style="line-height: 1.625;">${item}</span>
+            `;
+            container.appendChild(label);
+        });
     }
-  };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Page {pages[currentPage]?.id || '1A'} – {pages[currentPage]?.title || 'Loading...'}
-              </h1>
-              <p className="text-gray-600 mt-1">Howard Design × Certatude Creative Brief</p>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-gray-500">Certatude</div>
-              <div className="text-lg font-bold text-blue-600">Solutions</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    function toggleDataChecklist(item, checked) {
+        if (checked) {
+            if (!state.dataChecklist.includes(item)) {
+                state.dataChecklist.push(item);
+            }
+        } else {
+            state.dataChecklist = state.dataChecklist.filter(i => i !== item);
+        }
+    }
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-8 py-12">
-        <ProgressBar progress={pages[currentPage]?.progress || 15} />
+    // Slider controls
+    function updateBudgetSlider(value) {
+        state.budgetDesign = parseInt(value);
+        state.budgetMedia = 100 - state.budgetDesign;
         
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-          {renderCurrentPage()}
-          <Navigation />
-        </div>
-      </div>
+        document.getElementById('budgetDesignValue').textContent = state.budgetDesign + '%';
+        document.getElementById('budgetMediaValue').textContent = state.budgetMedia + '%';
+        document.getElementById('budgetMedia').value = state.budgetMedia;
+        
+        updateSliderBackgrounds();
+    }
 
-      {/* Footer */}
-      <div className="text-center py-8 text-gray-500 text-sm">
-        Proprietary and Confidential 2025 | Certatude Solutions
-      </div>
-    </div>
-  );
-};
+    function updateSlider(field, value, unit) {
+        state[field] = parseFloat(value);
+        document.getElementById(field + 'Value').textContent = value + unit;
+        updateSliderBackgrounds();
+    }
 
-export default CertatudeHowardDeck;
+    function updateSliderBackgrounds() {
+        const sliders = ['budgetDesign', 'audienceSize', 'responseRate', 'conversionRate', 'roiTarget'];
+        sliders.forEach(sliderId => {
+            const slider = document.getElementById(sliderId);
+            if (slider && !slider.disabled) {
+                const min = parseFloat(slider.min);
+                const max = parseFloat(slider.max);
+                const value = parseFloat(slider.value);
+                const percentage = ((value - min) / (max - min)) * 100;
+                slider.style.background = `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${percentage}%, #E5E7EB ${percentage}%, #E5E7EB 100%)`;
+            }
+        });
+    }
+
+    // Toggle controls
+    function setToggle(field, value) {
+        state[field] = value;
+        
+        const toggleContainer = document.getElementById(field + 'Toggle');
+        const buttons = toggleContainer.querySelectorAll('.toggle-button');
+        buttons.forEach(button => {
+            if (button.textContent === value) {
+                button.classList.add('toggle-button-active');
+            } else {
+                button.classList.remove('toggle-button-active');
+            }
+        });
+    }
+
+    // Calculate simulation outputs
+    function calculateOutputs() {
+        const engagementRate = Math.max(8, Math.min(25, 
+            (state.responseRate * 1.5) + 
+            (state.ctaPlacement === 'Above Fold' ? 3 : state.ctaPlacement === 'Mid-Page' ? 1 : -1) +
+            (state.budgetDesign / 100 * 5)
+        ));
+
+        const conversionPotential = state.conversionRate > 12 ? 'High' : 
+                                   state.conversionRate > 8 ? 'Moderate' : 'Low';
+
+        const roiLow = Math.max(2.0, state.roiTarget - 0.8 + (state.budgetMedia / 100));
+        const roiHigh = Math.min(5.0, state.roiTarget + 0.7 + (state.budgetMedia / 100));
+
+        // Update engagement gauge
+        document.getElementById('engagementRate').textContent = engagementRate.toFixed(1) + '%';
+        const gaugeArc = document.getElementById('gaugeArc');
+        const percentage = (engagementRate / 25) * 100;
+        const arcLength = (percentage / 100) * 170;
+        gaugeArc.setAttribute('stroke-dasharray', `${arcLength} 170`);
+
+        // Update conversion potential
+        const conversionEl = document.getElementById('conversionPotential');
+        conversionEl.textContent = conversionPotential;
+        conversionEl.style.color = conversionPotential === 'High' ? '#16a34a' : 
+                                   conversionPotential === 'Moderate' ? '#ea580c' : '#dc2626';
+
+        // Update ROI range
+        document.getElementById('roiRange').textContent = `${roiLow.toFixed(1)}x - ${roiHigh.toFixed(1)}x`;
+
+        // Update insights
+        updateInsights();
+    }
+
+    function updateInsights() {
+        const placementInsight = document.getElementById('placementInsight');
+        if (state.ctaPlacement === 'Above Fold') {
+            placementInsight.innerHTML = '<strong>Optimization Opportunity:</strong> Great placement! Above-fold CTAs typically see 15-25% higher conversion rates for mobile apps.';
+        } else if (state.ctaPlacement === 'Mid-Page') {
+            placementInsight.innerHTML = '<strong>Optimization Opportunity:</strong> Consider moving your CTA above the fold to potentially lift conversions by 8-12%.';
+        } else {
+            placementInsight.innerHTML = '<strong>Optimization Opportunity:</strong> Bottom placement may hurt performance. Moving to above-fold could increase conversions by 15-20%.';
+        }
+
+        const budgetInsight = document.getElementById('budgetInsight');
+        if (state.budgetDesign >= 60) {
+            budgetInsight.innerHTML = `<strong>Budget Allocation:</strong> Your ${state.budgetDesign}% design allocation supports strong creative quality, which is crucial for visual platforms like social media.`;
+        } else {
+            budgetInsight.innerHTML = `<strong>Budget Allocation:</strong> Your ${state.budgetDesign}% design allocation may be low for visual channels. Consider increasing design budget to 60%+ for better creative impact.`;
+        }
+    }
+</script>
