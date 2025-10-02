@@ -889,10 +889,26 @@
 </div>
 <!-- Navigation Buttons -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin: 40px 20px; padding: 20px 0; border-top: 1px solid #e9ecef;">
-  <button style="background: #6c757d; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: not-allowed; opacity: 0.6;" disabled>← Previous</button>
-  <span style="color: #666; font-size: 14px;">Page 1A of 3</span>
-  <button style="background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Next: Brand & Audience →</button>
+  <button 
+    onclick="goToPreviousPage()" 
+    id="prevBtn"
+    disabled
+    style="display: flex; align-items: center; padding: 12px 24px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: not-allowed; opacity: 0.6; font-weight: 500;"
+  >
+    ← Previous
+  </button>
+  
+  <span style="color: #666; font-size: 14px;" id="pageCounter">Page 1 of 7</span>
+  
+  <button 
+    onclick="goToNextPage()" 
+    id="nextBtn"
+    style="display: flex; align-items: center; padding: 12px 24px; background: #2F318D; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;"
+  >
+    Next: Brand & Audience →
+  </button>
 </div>
+
             
 <!-- Footer -->
 <div class="footer">
@@ -1187,4 +1203,42 @@
             budgetInsight.innerHTML = `<strong>Budget Allocation:</strong> Your ${state.budgetDesign}% design allocation may be low for visual channels. Consider increasing design budget to 60%+ for better creative impact.`;
         }
     }
+
+// Navigation functions
+let currentPage = 0;
+const totalPages = 7;
+
+function goToPreviousPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    updateNavigation();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function goToNextPage() {
+  if (currentPage < totalPages - 1) {
+    currentPage++;
+    updateNavigation();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    alert('Campaign Brief Complete!');
+  }
+}
+
+function updateNavigation() {
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const pageCounter = document.getElementById('pageCounter');
+  
+  prevBtn.disabled = currentPage === 0;
+  prevBtn.style.opacity = currentPage === 0 ? '0.6' : '1';
+  prevBtn.style.cursor = currentPage === 0 ? 'not-allowed' : 'pointer';
+  
+  const isLastPage = currentPage >= totalPages - 1;
+  nextBtn.disabled = isLastPage;
+  nextBtn.innerHTML = isLastPage ? 'Complete' : 'Next: Brand & Audience →';
+  
+  pageCounter.textContent = `Page ${currentPage + 1} of ${totalPages}`;
+}
 </script>
